@@ -7,11 +7,13 @@ import java.util.Random;
 public class AppJPanel extends JPanel implements ActionListener{
   static final int ScreenWidth = 600;
   static final int ScreenHeight = 600;
-  static final int WUnits = 5;
-  static final int HUnits = 5;
-  static final int UnitSize = ScreenWidth/WUnits;
-  Box boxes[][] = new Box[WUnits][HUnits];
+  static int WUnits = 5;
+  static int HUnits = 5;
+  static int UnitSize;
+  int level = 0 ;
+  Box boxes[][];
   Timer timer;
+  Random random;
   AppJPanel(){
     setPreferredSize(new Dimension(ScreenWidth,ScreenHeight));
     setBackground(Color.black);
@@ -20,13 +22,22 @@ public class AppJPanel extends JPanel implements ActionListener{
     startGame();
   }
   public void startGame(){
+    boxes = new Box[WUnits][HUnits];
+    UnitSize = ScreenWidth/WUnits;
     for(int i = 0; i<WUnits; i++){
       for(int j = 0; j<HUnits; j++){     
-        boxes[i][j] = new Box(false);
+        boxes[i][j] = new Box(true);
       }
     }
     timer = new Timer(75,this);
     timer.start();
+    random = new Random();
+    makeLevel();
+  }
+  public void makeLevel(){
+    for(int i = 0; i <= level; i++){
+      reverseState(random.nextInt(WUnits),random.nextInt(HUnits));
+    }
   }
   public void paintComponent(Graphics g){
     super.paintComponent(g);
@@ -43,23 +54,55 @@ public class AppJPanel extends JPanel implements ActionListener{
         g.fillRect(i*UnitSize,j*UnitSize,UnitSize,UnitSize);
       } 
     }
-    g.setColor(Color.white);
-    for(int i = 0; i<= WUnits; i++){
-      g.drawLine(i*UnitSize,0,i*UnitSize,ScreenHeight);
-      g.drawLine(0,i*UnitSize,ScreenWidth,i*UnitSize);
+    for(int i = 0; i<WUnits; i++){
+      for(int j = 0; j<HUnits; j++){
+        g.setColor(Color.white);
+        if(boxes[i][j].getState())
+        g.setColor(Color.black);
+
+        g.drawRect(i*UnitSize,j*UnitSize,UnitSize,UnitSize);
+      }
     }
   }
   @Override
   public void actionPerformed(ActionEvent e){
     repaint();
   }
+  public void reverseState(int x, int y){
+    for(int i = x-1; i <= x+1; i++){
+      for(int j = y-1; j <= y+1; j++){
+        if(i >= 0 && i < WUnits && j >= 0 && j < HUnits){
+          boxes[i][j].reverseState();
+        }
+      }
+    }
+  }
+  public boolean checkWin(){
+    for(int i = 0; i<WUnits; i++){
+      for(int j = 0; j<HUnits; j++){     
+        if(!boxes[i][j].getState()) return false;
+      }
+    }
+    return true;
+  }
+  public void makeBigger(){
+    WUnits++;
+    HUnits++;
+    level = 0;
+    startGame();
+  }
+  public void upLevel(){
+    if(level==WUnits*HUnits) makeBigger();
+    level++;
+    makeLevel();
+  }
   public class MyMouseAdpter extends MouseAdapter{
     @Override
     public void mouseClicked(MouseEvent e){
       int x = (WUnits*e.getX())/ScreenWidth;
       int y = (HUnits*e.getY())/ScreenHeight;
-      boxes[x][y].reverseState();
+      reverseState(x,y);
+      if(checkWin()) upLevel();
     }
   }
 }
-
