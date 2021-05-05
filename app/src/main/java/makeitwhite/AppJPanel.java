@@ -5,12 +5,13 @@ import java.awt.event.*;
 import java.util.Random;
 
 public class AppJPanel extends JPanel implements ActionListener{
+  static final int startBox = 1;
   static final int ScreenWidth = 600;
   static final int ScreenHeight = 600;
   static int WUnits = 5;
   static int HUnits = 5;
   static int UnitSize;
-  int level = 0 ;
+  int level = 1 ;
   Box boxes[][];
   Timer timer;
   Random random;
@@ -35,7 +36,7 @@ public class AppJPanel extends JPanel implements ActionListener{
     makeLevel();
   }
   public void makeLevel(){
-    for(int i = 0; i <= level; i++){
+    for(int i = 0; i < level; i++){
       reverseState(random.nextInt(WUnits),random.nextInt(HUnits));
     }
   }
@@ -45,21 +46,16 @@ public class AppJPanel extends JPanel implements ActionListener{
   }
   public void draw(Graphics g){
     for(int i = 0; i<WUnits; i++){
-      for(int j = 0; j<HUnits; j++){     
-        if(boxes[i][j].getState()) {
-          g.setColor(Color.white);
-        } else {
-          g.setColor(Color.black);
-        }
-        g.fillRect(i*UnitSize,j*UnitSize,UnitSize,UnitSize);
-      } 
-    }
-    for(int i = 0; i<WUnits; i++){
       for(int j = 0; j<HUnits; j++){
+        //draw boxes
+        g.setColor(Color.black);
+        if(boxes[i][j].getState()) 
+          g.setColor(Color.white);
+        g.fillRect(i*UnitSize,j*UnitSize,UnitSize,UnitSize);
+        //draw grids
         g.setColor(Color.white);
         if(boxes[i][j].getState())
-        g.setColor(Color.black);
-
+          g.setColor(Color.black);
         g.drawRect(i*UnitSize,j*UnitSize,UnitSize,UnitSize);
       }
     }
@@ -88,7 +84,7 @@ public class AppJPanel extends JPanel implements ActionListener{
   public void makeBigger(){
     WUnits++;
     HUnits++;
-    level = 0;
+    level = 1;
     startGame();
   }
   public void upLevel(){
