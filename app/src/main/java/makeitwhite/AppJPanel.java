@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.util.Random;
 
 public class AppJPanel extends JPanel implements ActionListener{
-  static final int startBox = 1;
   static final int ScreenWidth = 600;
   static final int ScreenHeight = 600;
   static int WUnits = 5;

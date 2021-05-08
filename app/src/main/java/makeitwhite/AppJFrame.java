@@ -1,14 +1,14 @@
 package makeitwhite;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class AppJFrame extends JFrame {
   AppJFrame(){
     add(new AppJPanel());
+    setUndecorated(true);
+    pack();
     setResizable(false);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    pack();
-    setVisible(true);
     setLocationRelativeTo(null);
-
+    setVisible(true);
   }
 }
